@@ -193,3 +193,35 @@
 		- 서비스: 우리WON카드 앱 내 '쇼핑/푸드' 탭에 주요 마트(이마트, 홈플러스 등) 및 온라인 몰의 실시간 할인 정보를 큐레이션
 		- Action: 가계 관리 비중이 높은 3050 여성을 위해 특정 마트 할인 쿠폰을 앱 내에서만 단독 증정
 		- 트리거: "장바구니 물가 방어 완료" 혹은 "자녀 병원비 페이백 적립 완료" 등의 감성적이고 실용적인 메시지를 활용하여 여성 사용자들의 앱 유입을 유도
+
+## 🛠 Troubleshooting
+
+프로젝트 진행 중 발생한 주요 이슈와 해결 과정입니다.
+
+### 1. Kibana Lens Formula 문법 및 수식 적용 이슈
+* **Issue**
+  * Kibana Lens의 `unique_count` 함수 내에 조건절을 직접 입력 시 Parsing Error가 발생하여 차트 생성이 불가능한 현상.
+* **Cause**
+  * SQL(`COUNT(CASE WHEN...)`)과 달리, Kibana Lens는 집계 대상(Field)과 필터 조건(KQL)을 파라미터로 엄격히 구분함.
+* **Resolution**
+  * 공식 문서를 참고하여 조건을 `kql` 파라미터로 분리하여 적용.
+  * **Before:** `unique_count(DIGT_CHNL_USE_YN:"Y")`
+  * **After:** `unique_count(CUST_ID, kql='DIGT_CHNL_USE_YN : "Y"')`
+
+### 2. 대용량 데이터 업로드 및 전처리 (Data Preprocessing)
+* **Issue**
+  * 1.5GB 규모의 단일 결제 데이터 파일을 웹(Data Visualizer)으로 업로드 시도했으나, 용량 제한(1GB) 및 브라우저 메모리 부족으로 실패.
+* **Cause**
+  * 단일 파일 크기가 시스템 허용치를 초과했으며, 분석에 불필요한 집계 데이터(중분류 행)가 포함되어 비효율적인 용량을 차지함.
+* **Resolution**
+  * 데이터를 **분기별(Quarterly)로 분할**하여 파일 크기를 경량화.
+  * 분석 대상이 아닌 **중분류 집계 행(Sub-total)을 사전에 제거(Cleaning)**한 후 업로드하여 적재 성공.
+
+### 3. 데이터 타입 매핑 불일치와 시각화 (Type Mapping)
+* **Issue**
+  * 연령(`AGE`) 분포 확인을 위해 히스토그램(Histogram) 기능을 사용하려 했으나 메뉴가 비활성화됨.
+* **Cause**
+  * 데이터 적재 시 `AGE` 필드가 숫자가 아닌 **문자열(Keyword)** 타입으로 자동 매핑되어 산술 연산 및 구간 설정이 불가능했음.
+* **Resolution**
+  * 전체 재색인(Reindexing) 대신, Kibana Lens의 **Filters 기능**을 활용.
+  * `AGE : "20" or AGE : "25"`와 같이 수동으로 연령대 그룹을 생성하고 라벨링(Labeling)하여 시각화 구현.
