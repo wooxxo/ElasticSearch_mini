@@ -80,8 +80,7 @@
 - 해당 **잠재 고객들을 유치**해야하는 필요성을 확인할 수 있습니다.
 
 ## 연령별 디지털 채널 가입자, 평균 소비량 분석
-<img src="images\age_join.png" width=500 height=250>
-<img src="images\age_use.png" width=500 hegiht=400>
+<img src="images\age_join.png" width=450 height=250> <img src="images\age_use.png" width=450 hegiht=400>
 
 - 왼쪽 이미지를 확인하면 전 연령에 있어 디지털 채널 미사용자가 제일 많은 비율을 차지하고 있음을 확인할 수 있습니다.
 - 오른쪽 이미지에서는 가입자의 우리카드를 이용한 평균 소비량이 가장 높음을 확인할 수 있고, 가입자 중 미사용자의 우리카드를 이용한 평균 소비량 역시 높은 비율을 차지하고 있어 이는 미가입자가 가입자로 전환 시 사용액 확대의 여지가 있음을 나타냅니다.
